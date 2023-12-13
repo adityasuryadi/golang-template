@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  ### ===================
+  ### APP SERVICE
+  ### ===================
+  order-service:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: order-service-container
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    volumes:
+      - ./:/app/
+  # filebeat:
+  #   container_name: product-filebeat
+  #   image: docker.elastic.co/beats/filebeat:6.5.1
+  #   volumes:
+  #     - ./docker/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+  #     - ./log/:/logs/
