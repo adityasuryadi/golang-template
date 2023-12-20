@@ -1,7 +1,7 @@
 package config
 
 import (
-	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -21,7 +21,9 @@ func NewDatabase(viper *viper.Viper, log *logrus.Logger) *gorm.DB {
 	maxConnection := viper.GetInt("database.pool.max")
 	maxLifeTimeConnection := viper.GetInt("database.pool.lifetime")
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, database)
+	p := strconv.Itoa(port)
+
+	dsn := "host=" + host + " user=" + username + " password=" + password + " dbname=" + database + " port=" + p + " sslmode=disable TimeZone=UTC"
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.New(&logrusWriter{Logger: log}, logger.Config{
