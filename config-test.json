@@ -1,0 +1,30 @@
+{
+  "app": {
+    "name": "golang-clean-architecture"
+  },
+  "web": {
+    "prefork": false,
+    "port": 5005
+  },
+  "log": {
+    "level": 6
+  },
+  "database": {
+    "username": "postgres",
+    "password": "postgres",
+    "host": "localhost",
+    "port": 5433,
+    "name": "order_service_db",
+    "pool": {
+      "idle": 10,
+      "max": 100,
+      "lifetime": 300
+    }
+  },
+  "rabbitmq": {
+    "username": "guest",
+    "password": "guest",
+    "host": "localhost",
+    "port": 5672
+  }
+}

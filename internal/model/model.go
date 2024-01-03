@@ -5,7 +5,12 @@ type WebResponse[T any] struct {
 	Status string        `json:"status"`
 	Data   T             `json:"data"`
 	Paging *PageMetadata `json:"paging,omitempty"`
-	Errors string        `json:"errors,omitempty"`
+}
+
+type ErrorResponse[T any] struct {
+	Code   int64  `json:"code"`
+	Status string `json:"status"`
+	Error  []T    `json:"error,omitempty"`
 }
 
 type PageResponse[T any] struct {

@@ -6,6 +6,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -36,6 +37,11 @@ func NewDatabase(viper *viper.Viper, log *logrus.Logger) *gorm.DB {
 	})
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)
+	}
+
+	err = db.Use(otelgorm.NewPlugin(otelgorm.WithDBName("order_service_db")))
+	if err != nil {
+		log.Fatalf("failed to set gorm plugin for opentelemetry: %v", err)
 	}
 
 	connection, err := db.DB()

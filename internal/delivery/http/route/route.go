@@ -13,4 +13,5 @@ type RouteConfig struct {
 
 func (c *RouteConfig) Setup() {
 	c.App.Post("/", c.OrderController.Create)
+	c.App.Get("/", c.OrderController.Search)
 }
