@@ -10,7 +10,7 @@ type WebResponse[T any] struct {
 type ErrorResponse[T any] struct {
 	Code   int64  `json:"code"`
 	Status string `json:"status"`
-	Error  []T    `json:"error,omitempty"`
+	Error  T      `json:"error,omitempty"`
 }
 
 type PageResponse[T any] struct {

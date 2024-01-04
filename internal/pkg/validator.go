@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"fmt"
 	"reflect"
 	"strings"
 
@@ -16,6 +15,8 @@ type ErrorMessage struct {
 	Field   string `json:"field"`
 	Message string `json:"message"`
 }
+
+var VarErrorJson map[string][]string
 
 func NewValidation(vl *validator.Validate) *Validation {
 	vl.RegisterTagNameFunc(func(fld reflect.StructField) string {
@@ -78,16 +79,12 @@ func (v *Validation) ValidateRequest(request interface{}) error {
 	return nil
 }
 
-func (v *Validation) ErrorJson(err error) []ErrorMessage {
-	fmt.Println("validationssssssss ", err)
-	validationErrors := err.(validator.ValidationErrors)
+func (v *Validation) ErrorJson(err error) interface{} {
 
-	out := make([]ErrorMessage, len(validationErrors))
-	for i, fieldError := range validationErrors {
-		out[i] = ErrorMessage{
-			Field:   removeFirstNameSpace(fieldError.Namespace()),
-			Message: GetErrorMsg(fieldError),
-		}
+	validationErrors := err.(validator.ValidationErrors)
+	out := make(map[string][]string, len(validationErrors))
+	for _, fieldError := range validationErrors {
+		out[removeFirstNameSpace(fieldError.Namespace())] = append(out[removeFirstNameSpace(fieldError.Namespace())], GetErrorMsg(fieldError))
 	}
 	return out
 }

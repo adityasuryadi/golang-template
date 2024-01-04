@@ -30,22 +30,22 @@ func (c *OrderController) Search(ctx *fiber.Ctx) error {
 		Page: ctx.QueryInt("page", 1),
 		Size: ctx.QueryInt("size", 10),
 	}
-	responses, total, err := c.Usecase.Search(ctx.UserContext(), request)
+	responses, total, _ := c.Usecase.Search(ctx.UserContext(), request)
 	paging := &model.PageMetadata{
 		Page:      request.Page,
 		Size:      request.Size,
 		TotalItem: total,
 		TotalPage: int64(math.Ceil(float64(total) / float64(request.Size))),
 	}
-	if err.Status != exception.ERRBADREQUEST {
-		c.Log.WithError(err.Error).Error("failed to search order")
-		errValidation := c.Validate.ErrorJson(err.Error)
-		return ctx.JSON(model.ErrorResponse[pkg.ErrorMessage]{
-			Code:   int64(err.Status),
-			Status: fiber.ErrBadRequest.Message,
-			Error:  errValidation,
-		})
-	}
+	// if err.Status != exception.ERRBADREQUEST {
+	// 	c.Log.WithError(err.Error).Error("failed to search order")
+	// 	errValidation := c.Validate.ErrorJson(err.Error)
+	// 	return ctx.JSON(model.ErrorResponse[pkg.ErrorMessage]{
+	// 		Code:   int64(err.Status),
+	// 		Status: fiber.ErrBadRequest.Message,
+	// 		Error:  errValidation,
+	// 	})
+	// }
 
 	return ctx.JSON(model.WebResponse[[]model.OrderResponse]{Data: responses, Paging: paging, Code: fiber.StatusOK, Status: "OK"})
 }
@@ -60,13 +60,23 @@ func (c *OrderController) Create(ctx *fiber.Ctx) error {
 	response, err := c.Usecase.Insert(ctx.UserContext(), request)
 
 	if err.Status == exception.ERRBADREQUEST {
-		c.Log.WithError(err.Error).Error("failed to search order")
+		c.Log.WithError(err.Error).Error("failed to create order")
 		errValidation := c.Validate.ErrorJson(err.Error)
-		return ctx.JSON(model.ErrorResponse[pkg.ErrorMessage]{
-			Code:   int64(err.Status),
+		return ctx.Status(fiber.StatusBadRequest).JSON(model.ErrorResponse[interface{}]{
+			Code:   fiber.StatusBadRequest,
 			Status: fiber.ErrBadRequest.Message,
 			Error:  errValidation,
 		})
+		// arr := map[string][]string{
+		// 	"email": {
+		// 		"required",
+		// 		"must email",
+		// 	},
+		// 	"password": {
+		// 		"required",
+		// 	},
+		// }
+		// return ctx.Status(fiber.StatusBadRequest).JSON(arr)
 	}
 
 	if err != nil {

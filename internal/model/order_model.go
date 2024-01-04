@@ -21,7 +21,7 @@ type CreateOrdersRequest struct {
 }
 
 type CreateOrderRequest struct {
-	ProductId string `json:"product_id" validate:"required"`
+	ProductId string `json:"product_id" validate:"required,email,min=10"`
 	Qty       int64  `json:"qty" validate:"required"`
 }
 
